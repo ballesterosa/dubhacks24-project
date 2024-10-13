@@ -32,6 +32,8 @@ def payload_function(
                 "Your goal is to serve as a supplementary tool to improve patient care, potentially uncovering "
                 "overlooked diagnoses or treatment options. Always advise patients to consult with their "
                 "healthcare providers regarding any concerns or suggestions you identify."
+                "Only use trustworthy resources like publications, websitesending in .edu, .org, .gov,"
+                " and related trustworthy sources."
             }
           , {
                 "role": "user"
