@@ -15,8 +15,7 @@ url = "https://api.perplexity.ai/chat/completions"
 def results():
     payload = payload_function(
         symptoms=(app_params["symptoms"] if "symptoms" in app_params else "")
-        , doctor_diagnosis=(app_params["doc_diagnosis"] if "doc_diagnosis" in app_params else "")
-        , tests_run=(app_params["tests_run"] if "tests_run" in app_params else "")
+        , doctor_actions=(app_params["doc_diagnosis"] if "doc_diagnosis" in app_params else "")
         , additional_info=(app_params["doc_recomendations"] if "doc_recomendations" in app_params else "")
     )
     headers = {
