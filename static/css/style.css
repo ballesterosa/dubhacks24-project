@@ -1,4 +1,38 @@
-div {
+h1 {
     text-align: center;
-    padding: 10px;
 }
+
+label {
+    margin-bottom: 10px;
+    text-align: left !important;
+}
+
+#content-box {
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#input-form {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+textarea {
+    width: 100%;
+    border-radius: 10px;
+}
+
+#submit-box {
+    padding-left: auto;
+    padding-right: auto;
+}
+/* 
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+} */
