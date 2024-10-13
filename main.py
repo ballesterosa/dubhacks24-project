@@ -24,6 +24,7 @@ def results():
     }
     llm_response = requests.request("POST", url, json=payload, headers=headers)
     response_dict = json.loads(llm_response.text)
+    app_params.clear()
 
     return render_template("results.html", results=markdown.markdown(response_dict["choices"][0]["message"]["content"]))
 
@@ -44,7 +45,7 @@ def get_user_in():
         app_params["doc_recomendations"] = doc_recomendations
         app_params["tests_run"] = tests_run
         
-    if "symptoms" in app_params:
+    if "symptoms" in app_params and app_params["symptoms"] != "":
         return results()
     return render_template("index.html")
 
