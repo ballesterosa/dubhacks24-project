@@ -1,2 +1,5 @@
 flask==3.0.3
 python==3.11.10
+openai==1.51.2
+dotenv==1.0.1
+requests==2.32.3
