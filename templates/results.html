@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- stylesheet in the static/css/ directory -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <title>Diagnosis Results</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Here are your results.</h1>
+        <div id="content-box">
+            {{results|safe}}
+        </div>
+    </div>
+</body>
+<script>
+</script>
+</html>
