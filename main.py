@@ -28,6 +28,7 @@ def results():
     return render_template("results.html", results=markdown.markdown(response_dict["choices"][0]["message"]["content"]))
 
 @app.route('/', methods =["GET", "POST"])
+@app.route('/index', methods =["GET", "POST"])
 def get_user_in():
     if request.method == "POST":
         # getting input with user_in = f_user_in in HTML form

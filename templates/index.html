@@ -2,55 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microphone Streaming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- stylesheet in the static/css/ directory -->
+    <title>Diagnosis Checker</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/media-recorder-js@2.1.0/src/index.min.js"></script>
 </head>
 <body>
-    <button id="startRecording">Start Recording</button>
-    <button id="stopRecording" disabled>Stop Recording</button>
-
-    <script>
-        let mediaRecorder;
-        let audioChunks = [];
-
-        // Start recording when button is clicked
-        document.getElementById('startRecording').addEventListener('click', () => {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                mediaRecorder = new MediaRecorder(stream);
-                
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
-                    sendAudioChunk(event.data);
-                };
-
-                mediaRecorder.start(500);  // collect audio in 500ms chunks
-                document.getElementById('stopRecording').disabled = false;
-            });
-        });
-
-        // Stop recording when button is clicked
-        document.getElementById('stopRecording').addEventListener('click', () => {
-            mediaRecorder.stop();
-            document.getElementById('stopRecording').disabled = true;
-        });
-
-        // Function to send audio chunks to backend
-        function sendAudioChunk(audioChunk) {
-            const formData = new FormData();
-            formData.append('audio', audioChunk);
-
-            fetch('/upload_audio', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Audio chunk uploaded successfully');
-            })
-            .catch(error => {
-                console.error('Error uploading audio chunk:', error);
-            });
-        }
-    </script>
+    <div id="content-box">
+        <h1>Welcome to a diagnosis checker for medical patients.</h1>
+        <br>
+        <div id="transcription-box">
+            <p id="status"></p>
+            <p id="transcript-description">OR Record your notes in multiple languages</p>
+            <button id="startButton" class="btn btn-info">Start Transcription</button>
+            <button id="stopButton" class="btn btn-info" disabled>Stop Transcription</button><br><br>
+        </div>
+        <form id="input-form" action="{{ url_for('get_user_in') }}" method="post">
+            <label for="f_user_in">Enter your symptoms below!</label>
+            <br>
+            <textarea id="user_in" name="f_user_in" placeholder="runny nose, cough, fever" rows="4" cols="50"></textarea>
+            <br><br>
+            <label for="f_went_to_doc">Did you go to a doctor?</label>
+            <br>
+            <select id="went_to_doc" name="f_went_to_doc">
+                <option id="no" value="no">No</option>
+                <option id="yes" value="yes">Yes</option>
+            </select>
+            <div id="doc_comments_box" style="display:none">
+                <br>
+                <label for="f_doc_comments">Did the doctor diagnose you with anything?</label>
+                <br>
+                <textarea id="doc_comments" name="f_doc_comments" placeholder="they said i am fine" rows="4" cols="50"></textarea>
+                <br><br>
+                <label for="f_doc_treatment">What's the current course of treatment?</label>
+                <br>
+                <textarea id="doc_treatment" name="f_doc_treatment" placeholder="rest and relaxation" rows="4" cols="50"></textarea>
+            </div>
+            <br><br>
+            <div id="submit-box">
+                <button id="submit-btn" type="submit" class="btn btn-info" value="Submit">Submit</button>
+            </div>
+        </form>
+    </div>
 </body>
+<script>
+    $('#went_to_doc').on('change', function () {
+        // alert("HELLOOOOO");
+        if(this.value === "yes"){
+            $("#doc_comments_box").show();
+        } else {
+            $("#doc_comments_box").hide();
+        }
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    $("#submit-btn").click(function() {
+      $(this).html(
+        `<span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true"></span> Loading...`
+      );
+      $(this).submit();
+    });
+});
+</script>
+<script>
+    let mediaRecorder;
+    let socket;
+
+    document.getElementById('startButton').addEventListener('click', async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        socket = new WebSocket('wss://api.deepgram.com/v1/listen?language=multi&model=nova-2', ['token', '3db7a334a11e04f86a12bd4cb496c118dce6ff30']);
+
+        socket.onopen = () => {
+            console.log({ event: 'onopen' });
+            document.querySelector('#status').textContent = 'Ready to transcribe';
+            mediaRecorder.addEventListener('dataavailable', event => {
+                if (event.data.size > 0 && socket.readyState === 1) {
+                    socket.send(event.data);
+                }
+            });
+            mediaRecorder.start(250);
+            document.getElementById('startButton').disabled = true;
+            document.getElementById('stopButton').disabled = false;
+        };
+
+        socket.onmessage = (message) => {
+            console.log({ event: 'onmessage', message });
+            const received = JSON.parse(message.data);
+            const transcript = received.channel.alternatives[0].transcript;
+            if (transcript && received.is_final) {
+                document.querySelector('#user_in').textContent += transcript + ' ';
+            }
+        };
+
+        socket.onclose = () => {
+            console.log({ event: 'onclose' });
+        };
+
+        socket.onerror = (error) => {
+            console.log({ event: 'onerror', error });
+        };
+    });
+
+    document.getElementById('stopButton').addEventListener('click', () => {
+        mediaRecorder.stop();
+        socket.close();
+        document.getElementById('startButton').disabled = false;
+        document.getElementById('stopButton').disabled = true;
+        document.querySelector('#status').textContent = '';
+    });
+</script>
 </html>
