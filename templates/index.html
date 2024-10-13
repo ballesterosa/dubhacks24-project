@@ -23,7 +23,7 @@
             <button id="startButton" class="btn btn-info">Start Transcription</button>
             <button id="stopButton" class="btn btn-info" disabled>Stop Transcription</button><br><br>
         </div>
-        <form id="input-form" action="{{ url_for('get_user_in') }}" method="post">
+        <form id="input-form" action="{{ url_for('results') }}" method="post">
             <label for="f_user_in">Enter your symptoms below!</label>
             <br>
             <textarea id="user_in" name="f_user_in" placeholder="runny nose, cough, fever" rows="4" cols="50"></textarea>

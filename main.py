@@ -12,7 +12,23 @@ load_dotenv()
 YOUR_API_KEY = os.getenv("API_KEY")
 url = "https://api.perplexity.ai/chat/completions"
 
+@app.route('/results', methods=['POST', 'GET'])
 def results():
+    if request.method == "POST":
+        # getting input with user_in = f_user_in in HTML form
+        symptoms = request.form.get("f_user_in")
+        went_to_doc = request.form.get("f_went_to_doc")
+        doc_diagnosis = request.form.get("f_doc_diagnosis")
+        doc_recomendations = request.form.get("f_doc_recommendations")
+        tests_run = request.form.get("f_tests_run")
+
+
+        app_params["symptoms"] = symptoms
+        app_params["went_to_doc"] = went_to_doc
+        app_params["doc_diagnosis"] = doc_diagnosis
+        app_params["doc_recomendations"] = doc_recomendations
+        app_params["tests_run"] = tests_run
+        
     payload = payload_function(
         symptoms=(app_params["symptoms"] if "symptoms" in app_params else "")
         , doctor_actions=(app_params["doc_diagnosis"] if "doc_diagnosis" in app_params else "")
@@ -46,7 +62,7 @@ def get_user_in():
         app_params["doc_recomendations"] = doc_recomendations
         app_params["tests_run"] = tests_run
         
-    if "symptoms" in app_params and app_params["symptoms"] != "":
+    if "symptoms" in app_params:
         return results()
     return render_template("index.html")
 
