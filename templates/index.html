@@ -6,6 +6,7 @@
     <!-- stylesheet in the static/css/ directory -->
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <title>Diagnosis Checker</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
     <div>
@@ -17,12 +18,28 @@
             <br><br>
             <label for="f_went_to_doc">Did you go to a doctor?</label>
             <select id="went_to_doc" name="f_went_to_doc">
-                <option id="yes" value="yes">Yes</option>
                 <option id="no" value="no">No</option>
+                <option id="yes" value="yes">Yes</option>
             </select>
+            <div id="doc_comments_box" style="display:none">
+                <br><br>
+                <label for="f_doc_comments">What did the doctor say?</label>
+                <br><br>
+                <textarea id="doc_comments" name="f_doc_comments" placeholder="they said i am fine" rows="4" cols="50"></textarea>
+            </div>
             <br><br>
             <button type="submit" value="Submit">Submit</button>
         </form>
     </div>
 </body>
+<script>
+    $('#went_to_doc').on('change', function () {
+        // alert("HELLOOOOO");
+        if(this.value === "yes"){
+            $("#doc_comments_box").show();
+        } else {
+            $("#doc_comments_box").hide();
+        }
+    });
+</script>
 </html>
