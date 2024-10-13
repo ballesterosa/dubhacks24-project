@@ -14,14 +14,15 @@
 </head>
 <body>
     <div id="content-box">
-        <h1>Welcome to a diagnosis checker<br>for medical patients.</h1>
+        <h1>Welcome to a diagnosis checker for medical patients.</h1>
         <br>
         <form id="input-form" action="{{ url_for('get_user_in') }}" method="post">
-            <label for="f_user_in">Enter your symptoms below:</label>
+            <label for="f_user_in">Enter your symptoms below!</label>
             <br>
             <textarea id="user_in" name="f_user_in" placeholder="runny nose, cough, fever" rows="4" cols="50"></textarea>
             <br><br>
             <label for="f_went_to_doc">Did you go to a doctor?</label>
+            <br>
             <select id="went_to_doc" name="f_went_to_doc">
                 <option id="no" value="no">No</option>
                 <option id="yes" value="yes">Yes</option>
@@ -32,13 +33,13 @@
                 <br>
                 <textarea id="doc_comments" name="f_doc_comments" placeholder="they said i am fine" rows="4" cols="50"></textarea>
                 <br><br>
-                <label for="f_doc_comments">What's the current course of treatment?</label>
+                <label for="f_doc_treatment">What's the current course of treatment?</label>
                 <br>
-                <textarea id="doc_comments" name="f_doc_comments" placeholder="they said i am fine" rows="4" cols="50"></textarea>
+                <textarea id="doc_treatment" name="f_doc_treatment" placeholder="rest and relaxation" rows="4" cols="50"></textarea>
             </div>
             <br><br>
             <div id="submit-box">
-                <button type="submit" class="btn btn-info" value="Submit">Submit</button>
+                <button id="submit-btn" type="submit" class="btn btn-info" value="Submit">Submit</button>
             </div>
         </form>
     </div>

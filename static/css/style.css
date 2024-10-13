@@ -4,7 +4,27 @@ h1 {
 
 label {
     margin-bottom: 10px;
-    text-align: left !important;
+    font-weight: 500;
+}
+
+label::before {
+    content: '😷 ';
+}
+
+label::after {
+    content: ' 🏥';
+}
+
+/* #select {
+    width: 50%;
+    padding: 10px;
+    border-radius: 10px;
+    border-color: #0dcaf0;
+    border-width: 2px;
+} */
+
+#select {
+    border: none;
 }
 
 #content-box {
@@ -23,16 +43,17 @@ label {
 
 textarea {
     width: 100%;
+    padding: 10px;
     border-radius: 10px;
+    border-color: #0dcaf0;
+    border-width: 2px;
 }
 
 #submit-box {
-    padding-left: auto;
-    padding-right: auto;
+    display: flex;
+    justify-content: center;
 }
-/* 
-button {
+
+#submit-btn {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-} */
+}
